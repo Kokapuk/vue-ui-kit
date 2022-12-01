@@ -1,12 +1,12 @@
 <template>
-  <div class="theme-dark h-100 container" :class="theme">
+  <div class="h-100 container" :class="theme">
     <!-- <button class="button me-10">Click Me</button> -->
     <Button @click="() => (buttonLoading = !buttonLoading)" :loading="buttonLoading">Hello</Button>
     <Button disabled="true" :loading="false">Can't click me</Button>
 
     <div class="seperator"></div>
 
-    <input class="switch me-10" type="checkbox" />
+    <input @change="(event) => {theme = (event.target as HTMLInputElement).checked ? 'theme-light' : 'theme-dark'}" class="switch me-10" type="checkbox" />
     <input disabled class="switch me-10" type="checkbox" />
     <input disabled checked class="switch me-10" type="checkbox" />
 
@@ -37,6 +37,12 @@
     <div class="seperator"></div>
 
     <div class="loading-indicator"></div>
+
+    <div class="seperator"></div>
+
+    <SelectMenu />
+    <div class="seperator"></div>
+    <SelectMenu />
   </div>
 </template>
 
@@ -44,6 +50,7 @@
 import { ref } from 'vue';
 import Slider from './components/Slider.vue';
 import Button from './components/Button.vue';
+import SelectMenu from './components/SelectMenu.vue';
 
 const percentage = ref(10);
 const theme = ref<'theme-dark' | 'theme-light'>('theme-dark');

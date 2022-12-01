@@ -19,7 +19,7 @@ const props = defineProps({ loading: Boolean });
   padding: 10px 15px;
   height: 40px;
   color: white;
-  border-radius: 5px;
+  border-radius: var(--border-radius);
   font-size: 17px;
   border: 0;
   cursor: pointer;
