@@ -26,6 +26,7 @@
     <div class="seperator"></div>
 
     <Slider v-model="percentage" />
+    <div class="seperator"></div>
     <span>{{ `${percentage}%` }}</span>
 
     <div class="seperator"></div>
@@ -40,9 +41,11 @@
 
     <div class="seperator"></div>
 
-    <SelectMenu />
+    <SelectMenu :options="[{ text: 'One' }, { text: 'Two' }, { text: 'Three', disabled: true }]" v-model:selectedOption="option" />
     <div class="seperator"></div>
-    <SelectMenu />
+    <span>{{ option }}</span>
+    <div class="seperator"></div>
+    <SelectMenu disabled :options="[]" selectedOption="Four" />
   </div>
 </template>
 
@@ -52,8 +55,9 @@ import Slider from './components/Slider.vue';
 import Button from './components/Button.vue';
 import SelectMenu from './components/SelectMenu.vue';
 
-const percentage = ref(10);
 const theme = ref<'theme-dark' | 'theme-light'>('theme-dark');
+const percentage = ref(10);
+const option = ref('One');
 
 const buttonLoading = ref(false);
 </script>
@@ -63,5 +67,6 @@ const buttonLoading = ref(false);
   padding: 50px 250px;
   background-color: rgb(var(--bg-color));
   color: rgb(var(--font-color));
+  transition: backgroud-color var(--transition-duration);
 }
 </style>

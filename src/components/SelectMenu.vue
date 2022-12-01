@@ -1,35 +1,43 @@
 <template>
-  <div style="position: relative">
-    <button :class="{ 'menu-shown': menuShow }" @click="() => (menuShow = !menuShow)">
-      Select...
+  <div ref="container" @blur="() => (menuShow = false)" style="position: relative" tabindex="0">
+    <button :disabled="props.disabled" :class="{ 'menu-shown': menuShow }" @click="() => (menuShow = !menuShow)">
+      {{ selectedOption }}
       <Chevron class="chevron" :class="{ 'menu-shown': menuShow }" />
     </button>
-    <div ref="menu" @blur="() => (menuShow = false)" :class="{ 'menu-shown': menuShow }" class="menu" tabindex="0">
-      <button class="menu-item">One</button>
-      <button class="menu-item">Two</button>
-      <button class="menu-item">Three</button>
-      <button class="menu-item">Four</button>
-      <button class="menu-item">Five</button>
-      <button class="menu-item">Six</button>
+    <div v-if="!props.disabled" :class="{ 'menu-shown': menuShow }" class="menu">
+      <button v-for="option in props.options" :disabled="option.disabled ? option.disabled : false" @click="() => updateValue(option.text)" class="menu-item">
+        {{ option.text }}
+      </button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+export interface IOption {
+  text: string;
+  disabled?: boolean;
+}
+
 import { ref, watch } from 'vue';
 import Chevron from './Icons/Chevron.vue';
 
+const props = defineProps({ options: Array<IOption>, selectedOption: String, disabled: Boolean });
+const emit = defineEmits(['update:selectedOption']);
 const menuShow = ref(false);
-const menu = ref<null | HTMLDivElement>(null);
+const container = ref<null | HTMLDivElement>(null);
+const selectedOption = ref<string>(props.selectedOption!);
 
 watch(
-  () => {
-    return menuShow.value;
-  },
-  (value) => {
-    if (value) menu.value!.focus();
+  () => menuShow.value,
+  (newValue) => {
+    if (newValue) container.value!.focus();
   }
 );
+
+function updateValue(newValue: string) {
+  selectedOption.value = newValue;
+  emit('update:selectedOption', newValue);
+}
 </script>
 
 <style scoped>
@@ -42,11 +50,16 @@ button {
   background-color: rgb(var(--light-gray));
   border-radius: var(--border-radius);
   width: 100%;
-  font-size: 20px;
+  font-size: 17px;
   padding: 10px 15px;
   text-align: left;
   align-items: center;
   cursor: pointer;
+  transition: all var(--transition-duration);
+}
+
+button:disabled {
+  cursor: not-allowed;
 }
 
 button::before {
@@ -66,6 +79,10 @@ button:hover::before {
 
 .chevron {
   transition: var(--transition);
+}
+
+button:disabled .chevron {
+  opacity: 0.5;
 }
 
 .chevron.menu-shown {

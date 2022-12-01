@@ -40,6 +40,7 @@ onmousemove = (event) => {
   width: 100%;
   border-radius: 5px;
   cursor: pointer;
+  transition: background-color var(--transition-duration);
 }
 
 .filled-zone {
