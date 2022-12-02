@@ -53,7 +53,7 @@ onmousemove = (event) => {
 
 .filled-circle {
   position: absolute;
-  background-color: rgb(var(--accent));
+  background-color: white;
   aspect-ratio: 1 / 1;
   height: 150%;
   top: -25%;

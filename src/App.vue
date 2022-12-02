@@ -1,8 +1,10 @@
 <template>
   <div class="h-100 container" :class="theme">
     <!-- <button class="button me-10">Click Me</button> -->
-    <Button @click="() => (buttonLoading = !buttonLoading)" :loading="buttonLoading">Hello</Button>
-    <Button disabled="true" :loading="false">Can't click me</Button>
+    <Button @click="() => (buttonLoading = !buttonLoading)" noRipples :loading="buttonLoading">Loading Button</Button>
+    <Button>Ripples Button</Button>
+    <Button noRipples>No Ripples Button</Button>
+    <Button disabled>Can't click me</Button>
 
     <div class="seperator"></div>
 
@@ -41,11 +43,17 @@
 
     <div class="seperator"></div>
 
-    <SelectMenu :options="[{ text: 'One' }, { text: 'Two' }, { text: 'Three', disabled: true }]" v-model:selectedOption="option" />
+    <SelectMenu
+      :options="[
+        { text: 'One', value: 'o' },
+        { text: 'Two', value: 't' },
+        { text: 'Three', value: 'th', disabled: true },
+      ]"
+      v-model:selectedOption="option" />
     <div class="seperator"></div>
-    <span>{{ option }}</span>
+    <span>{{ `Value selected via select menu: ${option.value}` }}</span>
     <div class="seperator"></div>
-    <SelectMenu disabled :options="[]" selectedOption="Four" />
+    <SelectMenu disabled :options="[]" :selectedOption="{ text: 'Four', value: 'f' }" />
   </div>
 </template>
 
@@ -53,12 +61,11 @@
 import { ref } from 'vue';
 import Slider from './components/Slider.vue';
 import Button from './components/Button.vue';
-import SelectMenu from './components/SelectMenu.vue';
+import SelectMenu, { type IOption } from './components/SelectMenu.vue';
 
 const theme = ref<'theme-dark' | 'theme-light'>('theme-dark');
 const percentage = ref(10);
-const option = ref('One');
-
+const option = ref<IOption>({ text: 'One', value: 'o' });
 const buttonLoading = ref(false);
 </script>
 

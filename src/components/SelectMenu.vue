@@ -1,11 +1,11 @@
 <template>
   <div ref="container" @blur="() => (menuShow = false)" style="position: relative" tabindex="0">
     <button :disabled="props.disabled" :class="{ 'menu-shown': menuShow }" @click="() => (menuShow = !menuShow)">
-      {{ selectedOption }}
+      {{ selectedOption.text }}
       <Chevron class="chevron" :class="{ 'menu-shown': menuShow }" />
     </button>
     <div v-if="!props.disabled" :class="{ 'menu-shown': menuShow }" class="menu">
-      <button v-for="option in props.options" :disabled="option.disabled ? option.disabled : false" @click="() => updateValue(option.text)" class="menu-item">
+      <button v-for="option in props.options" :disabled="option.disabled" @click="() => updateValue(option)" class="menu-item">
         {{ option.text }}
       </button>
     </div>
@@ -15,17 +15,18 @@
 <script setup lang="ts">
 export interface IOption {
   text: string;
+  value: string;
   disabled?: boolean;
 }
 
-import { ref, watch } from 'vue';
+import { ref, watch, type PropType } from 'vue';
 import Chevron from './Icons/Chevron.vue';
 
-const props = defineProps({ options: Array<IOption>, selectedOption: String, disabled: Boolean });
+const props = defineProps({ options: Array<IOption>, selectedOption: Object as PropType<IOption>, disabled: Boolean });
 const emit = defineEmits(['update:selectedOption']);
 const menuShow = ref(false);
 const container = ref<null | HTMLDivElement>(null);
-const selectedOption = ref<string>(props.selectedOption!);
+const selectedOption = ref<IOption>(props.selectedOption!);
 
 watch(
   () => menuShow.value,
@@ -34,7 +35,7 @@ watch(
   }
 );
 
-function updateValue(newValue: string) {
+function updateValue(newValue: IOption) {
   selectedOption.value = newValue;
   emit('update:selectedOption', newValue);
 }
@@ -62,7 +63,7 @@ button:disabled {
   cursor: not-allowed;
 }
 
-button::before {
+button:not(:disabled)::before {
   content: '';
   position: absolute;
   left: 0;
