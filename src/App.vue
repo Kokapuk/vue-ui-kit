@@ -27,7 +27,7 @@
 
     <div class="seperator"></div>
 
-    <Slider v-model="percentage" />
+    <Slider v-model:value="percentage" :min="0" :max="100" :step="1" />
     <div class="seperator"></div>
     <span>{{ `${percentage}%` }}</span>
 
@@ -64,7 +64,7 @@ import Button from './components/Button.vue';
 import SelectMenu, { type IOption } from './components/SelectMenu.vue';
 
 const theme = ref<'theme-dark' | 'theme-light'>('theme-dark');
-const percentage = ref(10);
+const percentage = ref(50);
 const option = ref<IOption>({ text: 'One', value: 'o' });
 const buttonLoading = ref(false);
 </script>

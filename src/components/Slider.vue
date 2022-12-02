@@ -1,6 +1,6 @@
 <template>
   <div @mousedown="(event) => (mouseDown = event.button === 0)" @click="(event) => percentageUpdate(event)" ref="slider" class="slider mb-5">
-    <div class="filled-zone" :style="{ width: props.modelValue + '%' }">
+    <div class="filled-zone" :style="{ width: (100 / max) * props.value + '%' }">
       <div class="filled-circle"></div>
     </div>
   </div>
@@ -9,21 +9,32 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-const props = defineProps(['modelValue']);
-const emit = defineEmits(['update:modelValue']);
+interface IProps {
+  value: number;
+  min: number;
+  max: number;
+  step: number;
+}
+
+const props = defineProps<IProps>();
+const emit = defineEmits(['update:value']);
 const mouseDown = ref(false);
 const slider = ref<null | HTMLDivElement>(null);
 
 function clampPercentage(value: number): number {
-  value = Math.floor(value);
+  value = Number(value.toFixed(2));
 
-  if (value <= 0) return 0;
-  else if (value >= 100) return 100;
+  if (value <= props.min) return props.min;
+  else if (value >= props.max) return props.max;
   else return value;
 }
 
 function percentageUpdate(event: MouseEvent) {
-  emit('update:modelValue', clampPercentage((event.pageX - slider.value!.offsetLeft) / (slider.value!.clientWidth / 100)));
+  let percentageDifference = props.value - clampPercentage((event.pageX - slider.value!.offsetLeft) / (slider.value!.clientWidth / props.max));
+  if (Math.abs(percentageDifference) < props.step) return;
+
+  let jump = Math.floor(Math.abs(percentageDifference) / props.step);
+  emit('update:value', clampPercentage(percentageDifference > 0 ? props.value - props.step * jump : props.value + props.step * jump));
 }
 
 onmouseup = (event) => (mouseDown.value = !(event.button === 0));
