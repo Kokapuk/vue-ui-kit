@@ -1,14 +1,24 @@
 <template>
   <div class="h-100 container" :class="theme">
-    <!-- <button class="button me-10">Click Me</button> -->
-    <Button @click="() => (buttonLoading = !buttonLoading)" noRipples :loading="buttonLoading">Loading Button</Button>
-    <Button>Ripples Button</Button>
-    <Button noRipples>No Ripples Button</Button>
-    <Button disabled>Can't click me</Button>
+    <Button class="me-10" @click="() => (buttonLoading = !buttonLoading)" noRipples :loading="buttonLoading">
+      Loading Button
+    </Button>
+    <Button class="me-10">Ripples Button</Button>
+    <Button class="me-10" noRipples>No Ripples Button</Button>
+    <Button class="me-10" disabled>Can't click me</Button>
+    <Button class="icon-button me-10"> <Microphone class="icon-button__icon" /> Icon button </Button>
+    <Tooltip text="Icon button without text">
+      <Button class="icon-button"> <Microphone class="icon-button__icon" /></Button>
+    </Tooltip>
 
     <div class="seperator"></div>
 
-    <input @change="(event) => {theme = (event.target as HTMLInputElement).checked ? 'theme-light' : 'theme-dark'}" class="switch me-10" type="checkbox" />
+    <Tooltip text="Theme switcher">
+      <input
+        @change="(event) => {theme = (event.target as HTMLInputElement).checked ? 'theme-light' : 'theme-dark'}"
+        class="switch me-10"
+        type="checkbox" />
+    </Tooltip>
     <input disabled class="switch me-10" type="checkbox" />
     <input disabled checked class="switch me-10" type="checkbox" />
 
@@ -54,6 +64,12 @@
     <span>{{ `Value selected via select menu: ${option.value}` }}</span>
     <div class="seperator"></div>
     <SelectMenu disabled :options="[]" :selectedOption="{ text: 'Four', value: 'f' }" />
+
+    <div class="seperator"></div>
+
+    <Tooltip text="Tooltip text example">
+      <Button disabled>Tooltip</Button>
+    </Tooltip>
   </div>
 </template>
 
@@ -61,7 +77,9 @@
 import { ref } from 'vue';
 import Slider from './components/Slider.vue';
 import Button from './components/Button.vue';
+import Tooltip from './components/Tooltip.vue';
 import SelectMenu, { type IOption } from './components/SelectMenu.vue';
+import Microphone from './components/Icons/Microphone.vue';
 
 const theme = ref<'theme-dark' | 'theme-light'>('theme-dark');
 const percentage = ref(50);
@@ -74,6 +92,6 @@ const buttonLoading = ref(false);
   padding: 50px 250px;
   background-color: rgb(var(--bg-color));
   color: rgb(var(--font-color));
-  transition: backgroud-color var(--transition-duration);
+  transition: background-color var(--transition-duration);
 }
 </style>

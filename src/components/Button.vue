@@ -1,9 +1,13 @@
 <template>
   <button
-    @click="(event) => !props.noRipples && initiateRipple(event.offsetX, event.offsetY)"
+    @mousedown="(event) => !props.noRipples && initiateRipple(event.offsetX, event.offsetY)"
     :disabled="props.loading ? props.loading : false"
-    class="button me-10">
-    <div v-if="!props.noRipples" v-for="ripple in ripples" class="ripple" :style="{ left: ripple.x - 5 + 'px', top: ripple.y - 5 + 'px' }"></div>
+    class="button">
+    <div
+      v-if="!props.noRipples"
+      v-for="ripple in ripples"
+      class="ripple"
+      :style="{ left: ripple.x - 5 + 'px', top: ripple.y - 5 + 'px' }"></div>
     <Transition name="fade">
       <div v-if="props.loading" class="loading-container">
         <div class="loading-indicator" />
@@ -47,9 +51,12 @@ function initiateRipple(x: number, y: number) {
 
 <style scoped>
 .button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  vertical-align: top;
   background-color: rgb(var(--accent));
   padding: 10px 15px;
-  height: 40px;
   color: white;
   border-radius: var(--border-radius);
   font-size: 17px;
@@ -57,6 +64,7 @@ function initiateRipple(x: number, y: number) {
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  white-space: pre;
 }
 
 .button:disabled {
@@ -131,5 +139,15 @@ function initiateRipple(x: number, y: number) {
     scale: 15;
     opacity: 0;
   }
+}
+
+.icon-button {
+  padding: 10px;
+}
+</style>
+
+<style>
+.icon-button__icon {
+  height: 20px;
 }
 </style>

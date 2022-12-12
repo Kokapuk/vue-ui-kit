@@ -1,5 +1,9 @@
 <template>
-  <div @mousedown="(event) => (mouseDown = event.button === 0)" @click="(event) => percentageUpdate(event)" ref="slider" class="slider mb-5">
+  <div
+    @mousedown="(event) => (mouseDown = event.button === 0)"
+    @click="(event) => percentageUpdate(event)"
+    ref="slider"
+    class="slider mb-5">
     <div class="filled-zone" :style="{ width: (100 / max) * props.value + '%' }">
       <div class="filled-circle"></div>
     </div>
@@ -30,11 +34,15 @@ function clampPercentage(value: number): number {
 }
 
 function percentageUpdate(event: MouseEvent) {
-  let percentageDifference = props.value - clampPercentage((event.pageX - slider.value!.offsetLeft) / (slider.value!.clientWidth / props.max));
+  let percentageDifference =
+    props.value - clampPercentage((event.pageX - slider.value!.offsetLeft) / (slider.value!.clientWidth / props.max));
   if (Math.abs(percentageDifference) < props.step) return;
 
   let jump = Math.floor(Math.abs(percentageDifference) / props.step);
-  emit('update:value', clampPercentage(percentageDifference > 0 ? props.value - props.step * jump : props.value + props.step * jump));
+  emit(
+    'update:value',
+    clampPercentage(percentageDifference > 0 ? props.value - props.step * jump : props.value + props.step * jump)
+  );
 }
 
 onmouseup = (event) => (mouseDown.value = !(event.button === 0));
