@@ -7,16 +7,16 @@
     <Button class="me-10" noRipples>No Ripples Button</Button>
     <Button class="me-10" disabled>Can't click me</Button>
     <Button class="icon-button me-10"> <Microphone class="icon-button__icon" /> Icon button </Button>
-    <Tooltip text="Icon button without text">
+    <Tooltip text="Icon button without text" :positioning="TooltipPositioning.top">
       <Button class="icon-button"> <Microphone class="icon-button__icon" /></Button>
     </Tooltip>
 
     <div class="seperator"></div>
 
-    <Tooltip text="Theme switcher">
+    <Tooltip text="Theme switcher" :positioning="TooltipPositioning.top" class="me-10">
       <input
         @change="(event) => {theme = (event.target as HTMLInputElement).checked ? 'theme-light' : 'theme-dark'}"
-        class="switch me-10"
+        class="switch"
         type="checkbox" />
     </Tooltip>
     <input disabled class="switch me-10" type="checkbox" />
@@ -67,8 +67,17 @@
 
     <div class="seperator"></div>
 
-    <Tooltip text="Tooltip text example">
-      <Button disabled>Tooltip</Button>
+    <Tooltip text="Tooltip text example" :positioning="TooltipPositioning.top" class="me-10">
+      <Button disabled>Top tooltip</Button>
+    </Tooltip>
+    <Tooltip text="Tooltip text example" :positioning="TooltipPositioning.right" class="me-10">
+      <Button disabled>Right tooltip</Button>
+    </Tooltip>
+    <Tooltip text="Tooltip text example" :positioning="TooltipPositioning.bottom" class="me-10">
+      <Button disabled>Bottom tooltip</Button>
+    </Tooltip>
+    <Tooltip text="Tooltip text example" :positioning="TooltipPositioning.left">
+      <Button disabled>Left tooltip</Button>
     </Tooltip>
   </div>
 </template>
@@ -80,6 +89,7 @@ import Button from './components/Button.vue';
 import Tooltip from './components/Tooltip.vue';
 import SelectMenu, { type IOption } from './components/SelectMenu.vue';
 import Microphone from './components/Icons/Microphone.vue';
+import { TooltipPositioning } from './types';
 
 const theme = ref<'theme-dark' | 'theme-light'>('theme-dark');
 const percentage = ref(50);
