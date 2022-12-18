@@ -1,19 +1,19 @@
 <template>
   <div class="h-100 container" :class="theme">
-    <Button class="me-10" @click="() => (buttonLoading = !buttonLoading)" noRipples :loading="buttonLoading">
-      Loading Button
-    </Button>
+    <Tooltip class="me-10" text="Loading button" :positioning="TooltipPositioning.left">
+      <Button @click="() => (buttonLoading = !buttonLoading)" noRipples :loading="buttonLoading"> Loading Button </Button>
+    </Tooltip>
     <Button class="me-10">Ripples Button</Button>
     <Button class="me-10" noRipples>No Ripples Button</Button>
     <Button class="me-10" disabled>Can't click me</Button>
     <Button class="icon-button me-10"> <Microphone class="icon-button__icon" /> Icon button </Button>
-    <Tooltip text="Icon button without text" :positioning="TooltipPositioning.top">
+    <Tooltip text="Icon button without text" :positioning="TooltipPositioning.right">
       <Button class="icon-button"> <Microphone class="icon-button__icon" /></Button>
     </Tooltip>
 
     <div class="seperator"></div>
 
-    <Tooltip text="Theme switcher" :positioning="TooltipPositioning.top" class="me-10">
+    <Tooltip text="Theme switcher" :positioning="TooltipPositioning.left" class="me-10">
       <input
         @change="(event) => {theme = (event.target as HTMLInputElement).checked ? 'theme-light' : 'theme-dark'}"
         class="switch"
@@ -55,9 +55,13 @@
 
     <SelectMenu
       :options="[
-        { text: 'One', value: 'o' },
-        { text: 'Two', value: 't' },
-        { text: 'Three', value: 'th', disabled: true },
+        { text: 'One', value: '1' },
+        { text: 'Two', value: '2' },
+        { text: 'Three', value: '3', disabled: true },
+        { text: 'Four', value: '4' },
+        { text: 'Five', value: '5' },
+        { text: 'Six', value: '6' },
+        { text: 'Seven', value: '7' },
       ]"
       v-model:selectedOption="option" />
     <div class="seperator"></div>
@@ -67,18 +71,29 @@
 
     <div class="seperator"></div>
 
-    <Tooltip text="Tooltip text example" :positioning="TooltipPositioning.top" class="me-10">
-      <Button disabled>Top tooltip</Button>
+    <Tooltip text="Top Tooltip Text" :positioning="TooltipPositioning.top" class="me-10">
+      <Button disabled>Top Tooltip</Button>
     </Tooltip>
-    <Tooltip text="Tooltip text example" :positioning="TooltipPositioning.right" class="me-10">
-      <Button disabled>Right tooltip</Button>
+    <Tooltip text="Right Tooltip Text" :positioning="TooltipPositioning.right" class="me-10">
+      <Button disabled>Right Tooltip</Button>
     </Tooltip>
-    <Tooltip text="Tooltip text example" :positioning="TooltipPositioning.bottom" class="me-10">
-      <Button disabled>Bottom tooltip</Button>
+    <Tooltip text="Bottom Tooltip Text" :positioning="TooltipPositioning.bottom" class="me-10">
+      <Button disabled>Bottom Tooltip</Button>
     </Tooltip>
-    <Tooltip text="Tooltip text example" :positioning="TooltipPositioning.left">
-      <Button disabled>Left tooltip</Button>
+    <Tooltip text="Left Tooltip Text" :positioning="TooltipPositioning.left">
+      <Button disabled>Left Tooltip</Button>
     </Tooltip>
+
+    <div class="seperator"></div>
+
+    <div class="center-y">
+      <ProgressBar class="me-10" :progress="progressBarProgress" />
+      <span style="width: 50px; text-align: right">{{ progressBarProgress }}%</span>
+    </div>
+
+    <div class="seperator"></div>
+    <Button @click="() => progressBarProgress < 100 && (progressBarProgress += 10)" class="me-10">+ 10</Button>
+    <Button @click="() => progressBarProgress > 0 && (progressBarProgress -= 10)">- 10</Button>
   </div>
 </template>
 
@@ -88,13 +103,15 @@ import Slider from './components/Slider.vue';
 import Button from './components/Button.vue';
 import Tooltip from './components/Tooltip.vue';
 import SelectMenu, { type IOption } from './components/SelectMenu.vue';
+import ProgressBar from './components/ProgressBar.vue';
 import Microphone from './components/Icons/Microphone.vue';
 import { TooltipPositioning } from './types';
 
 const theme = ref<'theme-dark' | 'theme-light'>('theme-dark');
 const percentage = ref(50);
-const option = ref<IOption>({ text: 'One', value: 'o' });
+const option = ref<IOption>({ text: 'One', value: '1' });
 const buttonLoading = ref(false);
+const progressBarProgress = ref(50);
 </script>
 
 <style scoped>

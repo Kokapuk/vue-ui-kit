@@ -1,10 +1,10 @@
 <template>
-  <div ref="container" @blur="() => (menuShow = false)" style="position: relative" tabindex="0">
-    <button :disabled="props.disabled" :class="{ 'menu-shown': menuShow }" @click="() => (menuShow = !menuShow)">
+  <div ref="container" class="menu-container" style="position: relative" tabindex="0">
+    <button :disabled="props.disabled">
       {{ selectedOption.text }}
-      <Chevron class="chevron" :class="{ 'menu-shown': menuShow }" />
+      <Chevron class="chevron" />
     </button>
-    <div v-if="!props.disabled" :class="{ 'menu-shown': menuShow }" class="menu">
+    <div v-if="!props.disabled" class="menu">
       <button v-for="option in props.options" :disabled="option.disabled" @click="() => updateValue(option)" class="menu-item">
         {{ option.text }}
       </button>
@@ -19,29 +19,35 @@ export interface IOption {
   disabled?: boolean;
 }
 
-import { ref, watch, type PropType } from 'vue';
+import { ref, type PropType } from 'vue';
 import Chevron from './Icons/Chevron.vue';
 
 const props = defineProps({ options: Array<IOption>, selectedOption: Object as PropType<IOption>, disabled: Boolean });
 const emit = defineEmits(['update:selectedOption']);
-const menuShow = ref(false);
-const container = ref<null | HTMLDivElement>(null);
 const selectedOption = ref<IOption>(props.selectedOption!);
-
-watch(
-  () => menuShow.value,
-  (newValue) => {
-    if (newValue) container.value!.focus();
-  }
-);
+const container = ref<null | HTMLDivElement>(null);
 
 function updateValue(newValue: IOption) {
   selectedOption.value = newValue;
   emit('update:selectedOption', newValue);
+
+  container.value!.focus();
+  container.value!.blur();
 }
 </script>
 
 <style scoped>
+::-webkit-scrollbar {
+  width: 7px;
+  background-color: rgb(var(--light-gray));
+  border-bottom-right-radius: var(--border-radius);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgb(var(--font-color), 0.2);
+  border-radius: var(--border-radius);
+}
+
 button {
   position: relative;
   display: flex;
@@ -86,11 +92,11 @@ button:disabled .chevron {
   opacity: 0.5;
 }
 
-.chevron.menu-shown {
+.menu-container:focus-within .chevron {
   rotate: -180deg;
 }
 
-button.menu-shown {
+.menu-container:focus-within button {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 }
@@ -102,12 +108,12 @@ button.menu-shown {
   border-bottom-left-radius: var(--border-radius);
   border-bottom-right-radius: var(--border-radius);
   max-height: 0px;
-  overflow-y: auto;
+  overflow: auto;
   transition: var(--transition);
 }
 
-.menu.menu-shown {
-  max-height: 300px;
+.menu-container:focus-within .menu {
+  max-height: 200px;
 }
 
 .menu-item {
