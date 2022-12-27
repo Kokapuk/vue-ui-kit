@@ -49,7 +49,7 @@
 
     <div class="seperator"></div>
 
-    <div class="loading-indicator"></div>
+    <LoadingIndicator />
 
     <div class="seperator"></div>
 
@@ -104,6 +104,7 @@ import Button from './components/Button.vue';
 import Tooltip from './components/Tooltip.vue';
 import SelectMenu, { type IOption } from './components/SelectMenu.vue';
 import ProgressBar from './components/ProgressBar.vue';
+import LoadingIndicator from './components/LoadingIndicator.vue';
 import Microphone from './components/Icons/Microphone.vue';
 import { TooltipPositioning } from './types';
 

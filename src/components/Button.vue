@@ -10,7 +10,7 @@
       :style="{ left: ripple.x - 5 + 'px', top: ripple.y - 5 + 'px' }"></div>
     <Transition name="fade">
       <div v-if="props.loading" class="loading-container">
-        <div class="loading-indicator" />
+        <LoadingIndicator />
       </div>
     </Transition>
     <slot class="me-5" />
@@ -19,6 +19,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import LoadingIndicator from './LoadingIndicator.vue';
 
 interface IRipple {
   x: number;
@@ -31,7 +32,6 @@ interface IProps {
   noRipples?: boolean;
 }
 
-// const props = defineProps({ loading: Boolean, ripples: Boolean });
 const props = defineProps<IProps>();
 const ripples = ref<IRipple[]>([]);
 const rippleTimeout = ref<null | number>(null);
@@ -95,22 +95,16 @@ function initiateRipple(x: number, y: number) {
 .loading-container {
   display: flex;
   position: absolute;
-  left: 0;
-  top: 0;
+  justify-content: center;
+  align-items: center;
   width: 100%;
   height: 100%;
   background-color: inherit;
-  justify-content: center;
-  align-items: center;
 }
 
 .loading-indicator {
-  border-color: white;
-}
-
-.loading-indicator {
-  height: 70%;
-  border-width: 5px;
+  --loading-indicator-size: 30px !important;
+  --loading-indicator-color: white !important;
 }
 
 .fade-enter-active,
