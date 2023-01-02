@@ -92,8 +92,39 @@
     </div>
 
     <div class="seperator"></div>
+
     <Button @click="() => progressBarProgress < 100 && (progressBarProgress += 10)" class="me-10">+ 10</Button>
     <Button @click="() => progressBarProgress > 0 && (progressBarProgress -= 10)">- 10</Button>
+
+    <div class="seperator"></div>
+
+    <ContextMenu
+      @close-request="() => (showContextMenu = false)"
+      :show="showContextMenu"
+      :offset-x="contextMenuOffest.x"
+      :offset-y="contextMenuOffest.y"
+      :menu-items="[
+        {
+          text: 'Show in explorer',
+          clickHandle: () => {
+            log(1);
+          },
+        },
+        {
+          text: 'Rename',
+          clickHandle: () => {
+            log(2);
+          },
+          separator: true,
+        },
+        {
+          text: 'Delete',
+          clickHandle: () => {
+            log(3);
+          },
+        },
+      ]" />
+    <Button @click="showContextMenuClickHandle">Show context menu</Button>
   </div>
 </template>
 
@@ -107,12 +138,25 @@ import ProgressBar from './components/ProgressBar.vue';
 import LoadingIndicator from './components/LoadingIndicator.vue';
 import Microphone from './components/Icons/Microphone.vue';
 import { TooltipPositioning } from './types';
+import ContextMenu from './components/ContextMenu.vue';
 
 const theme = ref<'theme-dark' | 'theme-light'>('theme-dark');
 const percentage = ref(50);
 const option = ref<IOption>({ text: 'One', value: '1' });
 const buttonLoading = ref(false);
 const progressBarProgress = ref(50);
+const showContextMenu = ref(false);
+const contextMenuOffest = ref({ x: 0, y: 0 });
+
+function showContextMenuClickHandle(event: MouseEvent) {
+  showContextMenu.value = true;
+  contextMenuOffest.value.x = event.clientX;
+  contextMenuOffest.value.y = event.clientY;
+}
+
+function log(content: any) {
+  console.log(content);
+}
 </script>
 
 <style scoped>

@@ -1,20 +1,19 @@
 <template>
   <div
-    @blur="() => emit('close')"
+    @blur="menuContainerBlurHandle"
     ref="menuContainer"
     tabindex="0"
     :class="['menu-container', { shown: props.show }]"
     :style="{ left: clampHorizontal(props.offsetX) + 'px', top: clampVertical(props.offsetY) + 'px' }">
-    <Button v-for="item in props.menuItems" @click="item.clickHandle" :disabled="item.disabled" noRipples class="menu-item">
+    <Button
+      @blur="menuItemBlurHandle"
+      @focus="() => (hasFocus = true)"
+      v-for="item in props.menuItems"
+      @click="(event) => menuItemClickHandle(event, item)"
+      :disabled="item.disabled"
+      :class="['menu-item', item.separator && 'separator']">
       {{ item.text }}
     </Button>
-
-    <!-- <Button noRipples class="menu-item">Open</Button>
-    <Button noRipples class="menu-item">Open with...</Button>
-    <Button noRipples class="menu-item">Copy</Button>
-    <Button noRipples class="menu-item">Cut</Button>
-    <Button noRipples class="menu-item">Send by email as text or image</Button>
-    <Button noRipples class="menu-item">Add to storage</Button> -->
   </div>
 </template>
 
@@ -23,6 +22,7 @@ export interface IMenuItem {
   text: string;
   disabled?: boolean;
   clickHandle?: (event: MouseEvent) => void;
+  separator?: boolean;
 }
 
 import { ref, watch } from 'vue';
@@ -36,13 +36,15 @@ interface IProps {
 }
 
 const props = defineProps<IProps>();
-const emit = defineEmits(['close']);
+const emit = defineEmits(['closeRequest']);
 const menuContainer = ref<null | HTMLDivElement>(null);
+const hasFocus = ref(false);
 
 watch(
   () => props.show,
   () => {
     if (props.show) menuContainer.value!.focus();
+    hasFocus.value = false;
   }
 );
 
@@ -65,12 +67,29 @@ function clampVertical(y: number) {
 
   return y;
 }
+
+function menuContainerBlurHandle() {
+  setTimeout(() => {
+    if (!hasFocus.value) emit('closeRequest');
+  });
+}
+
+function menuItemClickHandle(event: MouseEvent, item: IMenuItem) {
+  item.clickHandle && item.clickHandle(event);
+  emit('closeRequest');
+}
+
+function menuItemBlurHandle() {
+  hasFocus.value = false;
+  menuContainerBlurHandle();
+}
 </script>
 
 <style scoped>
 .menu-container {
+  z-index: 5;
   pointer-events: none;
-  position: absolute;
+  position: fixed;
   background-color: rgb(var(--light-gray));
   width: min-content;
   border-radius: var(--border-radius);
@@ -90,5 +109,9 @@ function clampVertical(y: number) {
   color: rgb(var(--font-color));
   background-color: transparent;
   border-radius: 0;
+}
+
+.menu-item.separator {
+  border-bottom: 1px solid rgb(var(--font-color), 0.1);
 }
 </style>
