@@ -99,7 +99,7 @@
     <div class="seperator"></div>
 
     <ContextMenu
-      @close-request="() => (showContextMenu = false)"
+      @close="() => (showContextMenu = false)"
       :show="showContextMenu"
       :offset-x="contextMenuOffest.x"
       :offset-y="contextMenuOffest.y"
@@ -112,15 +112,24 @@
         },
         {
           text: 'Rename',
+          disabled: true,
           clickHandle: () => {
             log(2);
           },
+        },
+        {
+          text: 'Unmute',
+          icon: Microphone,
           separator: true,
+          clickHandle: () => {
+            log(3);
+          },
         },
         {
           text: 'Delete',
+          danger: true,
           clickHandle: () => {
-            log(3);
+            log(4);
           },
         },
       ]" />

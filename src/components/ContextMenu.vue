@@ -1,17 +1,16 @@
 <template>
   <div
-    @blur="menuContainerBlurHandle"
+    @blur="() => emit('close')"
     ref="menuContainer"
     tabindex="0"
     :class="['menu-container', { shown: props.show }]"
     :style="{ left: clampHorizontal(props.offsetX) + 'px', top: clampVertical(props.offsetY) + 'px' }">
     <Button
-      @blur="menuItemBlurHandle"
-      @focus="() => (hasFocus = true)"
       v-for="item in props.menuItems"
       @click="(event) => menuItemClickHandle(event, item)"
       :disabled="item.disabled"
-      :class="['menu-item', item.separator && 'separator']">
+      :class="['menu-item icon-button', item.separator && 'separator', item.danger && 'danger']">
+      <Component class="icon-button__icon" v-if="item.icon !== undefined" :is="item.icon" />
       {{ item.text }}
     </Button>
   </div>
@@ -21,11 +20,13 @@
 export interface IMenuItem {
   text: string;
   disabled?: boolean;
-  clickHandle?: (event: MouseEvent) => void;
+  icon?: Component;
   separator?: boolean;
+  danger?: boolean;
+  clickHandle?: (event: MouseEvent) => void;
 }
 
-import { ref, watch } from 'vue';
+import { ref, watch, type Component } from 'vue';
 import Button from './Button.vue';
 
 interface IProps {
@@ -36,15 +37,13 @@ interface IProps {
 }
 
 const props = defineProps<IProps>();
-const emit = defineEmits(['closeRequest']);
+const emit = defineEmits(['close']);
 const menuContainer = ref<null | HTMLDivElement>(null);
-const hasFocus = ref(false);
 
 watch(
   () => props.show,
   () => {
     if (props.show) menuContainer.value!.focus();
-    hasFocus.value = false;
   }
 );
 
@@ -68,20 +67,11 @@ function clampVertical(y: number) {
   return y;
 }
 
-function menuContainerBlurHandle() {
-  setTimeout(() => {
-    if (!hasFocus.value) emit('closeRequest');
-  });
-}
-
 function menuItemClickHandle(event: MouseEvent, item: IMenuItem) {
   item.clickHandle && item.clickHandle(event);
-  emit('closeRequest');
-}
-
-function menuItemBlurHandle() {
-  hasFocus.value = false;
-  menuContainerBlurHandle();
+  menuContainer.value!.focus();
+  menuContainer.value!.blur();
+  emit('close');
 }
 </script>
 
@@ -93,12 +83,13 @@ function menuItemBlurHandle() {
   background-color: rgb(var(--light-gray));
   width: min-content;
   border-radius: var(--border-radius);
+  border: 1px solid rgb(var(--font-color), 0.1);
   overflow: hidden;
   opacity: 0;
-  transition: opacity var(--transition-duration), left var(--transition-duration), top var(--transition-duration);
+  transition: opacity var(--transition-duration);
 }
 
-.menu-container.shown {
+.menu-container:focus-within {
   pointer-events: all;
   opacity: 1;
 }
@@ -113,5 +104,9 @@ function menuItemBlurHandle() {
 
 .menu-item.separator {
   border-bottom: 1px solid rgb(var(--font-color), 0.1);
+}
+
+.menu-item.danger {
+  --font-color: var(--danger);
 }
 </style>
